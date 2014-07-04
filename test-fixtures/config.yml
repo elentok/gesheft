@@ -1,0 +1,18 @@
+# vim: filetype=yaml
+tunnel1:
+  port: 22
+  username: the-username
+  host: 1.2.3.4
+  bind:
+    client-port: 1234
+    host: 4.3.2.1
+    host-port: 1234
+
+tunnel2:
+  port: 23
+  username: the-username
+  host: 1.2.3.5
+  bind:
+    client-port: 1234
+    host: 4.3.2.1
+    host-port: 1234
