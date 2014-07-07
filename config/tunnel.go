@@ -1,19 +1,29 @@
 package config
 
-type Tunnel interface {
-	Name() string
+import "fmt"
+
+type Tunnel struct {
+	Name     string
+	Host     string
+	Username string
+	Port     int
+
+	Bind Bind
 }
 
-type tunnel struct {
-	name string
+type Bind struct {
+	ClientPort int `yaml:"client-port"`
+	HostPort   int `yaml:"host-port"`
+	Host       string
 }
 
-func (t *tunnel) Name() string {
-	return t.name
+func (t *Tunnel) Print() {
+	fmt.Printf("%s:\n", t.Name)
+	fmt.Printf("  %s@%s:%d\n", t.Username, t.Host, t.Port)
+	fmt.Printf("  -L %s\n", t.Bind.ToString())
 }
 
-func NewTunnel(name string, attributes map[interface{}]interface{}) Tunnel {
-	tunnel := tunnel{name: name}
+func (b *Bind) ToString() string {
+	return fmt.Sprintf("%d:%s:%d", b.ClientPort, b.Host, b.HostPort)
 
-	return &tunnel
 }

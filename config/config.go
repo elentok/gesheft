@@ -9,14 +9,14 @@ import (
 )
 
 type Config interface {
-	Tunnels() map[string]Tunnel
+	Tunnels() map[string]*Tunnel
 }
 
 type configImpl struct {
-	tunnels map[string]Tunnel
+	tunnels map[string]*Tunnel
 }
 
-func (c *configImpl) Tunnels() map[string]Tunnel {
+func (c *configImpl) Tunnels() map[string]*Tunnel {
 	return c.tunnels
 }
 
@@ -26,20 +26,17 @@ func Load(filename string) (Config, error) {
 		return nil, err
 	}
 
-	hash := make(map[string]interface{})
+	cfg := configImpl{
+		tunnels: make(map[string]*Tunnel),
+	}
 
-	err = yaml.Unmarshal(bytes, &hash)
+	err = yaml.Unmarshal(bytes, &cfg.tunnels)
 	if err != nil {
 		return nil, err
 	}
 
-	cfg := configImpl{
-		tunnels: make(map[string]Tunnel),
-	}
-	for name, attributes := range hash {
-		attribs := attributes.(map[interface{}]interface{})
-		tunnel := NewTunnel(name, attribs)
-		cfg.tunnels[name] = tunnel
+	for name, tunnel := range cfg.tunnels {
+		tunnel.Name = name
 	}
 
 	return &cfg, nil

@@ -25,4 +25,9 @@ var _ = Describe(".Load", func() {
 	It("loads the tunnels from the config file", func() {
 		Expect(cfg.Tunnels()).To(HaveLen(2))
 	})
+
+	It("sets the tunnels' Name field", func() {
+		t := cfg.Tunnels()["tunnel1"]
+		Expect(t.Name).To(Equal("tunnel1"))
+	})
 })
