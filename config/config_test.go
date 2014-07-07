@@ -14,7 +14,7 @@ var _ = Describe(".Load", func() {
 	)
 
 	BeforeEach(func() {
-		cfg, err = config.Load("../test-fixtures/config.yml")
+		cfg, err = config.Load("test-fixtures/config.yml")
 	})
 
 	It("loads the config from the file", func() {
