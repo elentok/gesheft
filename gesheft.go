@@ -20,6 +20,7 @@ func main() {
 		commands.Active,
 		commands.Start,
 		commands.Stop,
+		commands.Restart,
 	}
 
 	app.Run(os.Args)

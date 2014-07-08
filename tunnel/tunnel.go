@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -67,10 +68,14 @@ func (t *Tunnel) Start(verbose bool) error {
 	}
 
 	if verbose {
-		color.Green("Tunnel started with pid %d\n", cmd.Process.Pid)
+		color.Green("Starting tunnel '%s' (pid %d)\n",
+			t.Name,
+			cmd.Process.Pid)
 	}
 
 	SaveActive(t.Name, cmd.Process.Pid)
+
+	time.Sleep(1 * time.Second)
 
 	return nil
 }
@@ -123,5 +128,7 @@ func killProcess(pid int) error {
 		return err
 	}
 
-	return process.Kill()
+	err = process.Kill()
+	time.Sleep(1 * time.Second)
+	return err
 }
