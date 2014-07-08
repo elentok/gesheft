@@ -1,10 +1,13 @@
 package tunnel
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"syscall"
+
+	"github.com/fatih/color"
 )
 
 type Tunnel struct {
@@ -51,7 +54,7 @@ func (t *Tunnel) Start(verbose bool) error {
 	}
 
 	if active {
-		fmt.Printf("Tunnel '%s' is already active.\n", t.Name)
+		color.Red("Tunnel '%s' is already active.\n", t.Name)
 		return nil
 	}
 
@@ -64,7 +67,7 @@ func (t *Tunnel) Start(verbose bool) error {
 	}
 
 	if verbose {
-		fmt.Printf("Tunnel started with pid %d\n", cmd.Process.Pid)
+		color.Green("Tunnel started with pid %d\n", cmd.Process.Pid)
 	}
 
 	SaveActive(t.Name, cmd.Process.Pid)
