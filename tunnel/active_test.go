@@ -14,4 +14,10 @@ var _ = Describe(".LoadActive", func() {
 		Expect(active).To(HaveLen(1))
 		Expect(active["tunnel1"]).To(Equal(33394))
 	})
+
+	It("Returns an empty map when file doesn't exist", func() {
+		active, err := tunnel.LoadActive("non-existing-file")
+		Expect(err).To(BeNil())
+		Expect(active).To(HaveLen(0))
+	})
 })

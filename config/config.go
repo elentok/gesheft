@@ -1,6 +1,8 @@
 package config
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -36,8 +38,11 @@ func Load(filename string) (Config, error) {
 		return nil, err
 	}
 
-	for name, tunnel := range cfg.tunnels {
-		tunnel.Name = name
+	for name, t := range cfg.tunnels {
+		t.Name = name
+		if t.Binds == nil {
+			t.Binds = []*tunnel.Bind{t.Bind}
+		}
 	}
 
 	return &cfg, nil
@@ -45,6 +50,20 @@ func Load(filename string) (Config, error) {
 
 func Get() (Config, error) {
 	return Load(getConfigFilepath())
+}
+
+func GetTunnel(name string) (*tunnel.Tunnel, error) {
+	cfg, err := Get()
+	if err != nil {
+		return nil, err
+	}
+
+	t, ok := cfg.Tunnels()[name]
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("No tunnel named '%s'", name))
+	}
+
+	return t, nil
 }
 
 func getConfigFilepath() string {

@@ -16,8 +16,9 @@ func main() {
 
 	app.Commands = []cli.Command{
 		commands.List,
-		commands.Show,
+		commands.Info,
 		commands.Active,
+		commands.Start,
 	}
 
 	app.Run(os.Args)
