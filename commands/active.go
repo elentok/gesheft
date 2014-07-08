@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/codegangsta/cli"
-	"github.com/elentok/gesheft/config"
 	"github.com/elentok/gesheft/helpers"
+	"github.com/elentok/gesheft/tunnel"
 )
 
 var Active = cli.Command{
@@ -17,7 +17,7 @@ var Active = cli.Command{
 
 func active(c *cli.Context) {
 
-	active, err := config.GetActive()
+	active, err := tunnel.GetActive()
 
 	if err != nil {
 		helpers.ExitWithError(err)

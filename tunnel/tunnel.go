@@ -1,4 +1,4 @@
-package config
+package tunnel
 
 import "fmt"
 

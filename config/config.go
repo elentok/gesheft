@@ -5,18 +5,19 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/elentok/gesheft/tunnel"
 	"gopkg.in/yaml.v1"
 )
 
 type Config interface {
-	Tunnels() map[string]*Tunnel
+	Tunnels() map[string]*tunnel.Tunnel
 }
 
 type configImpl struct {
-	tunnels map[string]*Tunnel
+	tunnels map[string]*tunnel.Tunnel
 }
 
-func (c *configImpl) Tunnels() map[string]*Tunnel {
+func (c *configImpl) Tunnels() map[string]*tunnel.Tunnel {
 	return c.tunnels
 }
 
@@ -27,7 +28,7 @@ func Load(filename string) (Config, error) {
 	}
 
 	cfg := configImpl{
-		tunnels: make(map[string]*Tunnel),
+		tunnels: make(map[string]*tunnel.Tunnel),
 	}
 
 	err = yaml.Unmarshal(bytes, &cfg.tunnels)
