@@ -7,8 +7,8 @@ type Tunnel struct {
 	Host     string
 	Username string
 	Port     int
-
-	Bind Bind
+	Bind     *Bind
+	Binds    []*Bind
 }
 
 type Bind struct {
@@ -20,7 +20,14 @@ type Bind struct {
 func (t *Tunnel) Print() {
 	fmt.Printf("%s:\n", t.Name)
 	fmt.Printf("  %s@%s:%d\n", t.Username, t.Host, t.Port)
-	fmt.Printf("  -L %s\n", t.Bind.ToString())
+
+	if t.Binds != nil {
+		for _, bind := range t.Binds {
+			fmt.Printf("  -L %s\n", bind.ToString())
+		}
+	} else {
+		fmt.Printf("  -L %s\n", t.Bind.ToString())
+	}
 }
 
 func (b *Bind) ToString() string {
