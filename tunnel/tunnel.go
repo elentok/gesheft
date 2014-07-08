@@ -90,3 +90,35 @@ func (t *Tunnel) getSshArgs() []string {
 
 	return args
 }
+
+func (t *Tunnel) Stop(verbose bool) error {
+	active, err := t.IsActive()
+	if err != nil {
+		return err
+	}
+
+	if !active {
+		return errors.New(
+			fmt.Sprintf("Tunnel '%s' is not active", t.Name))
+	}
+
+	pid, err := GetPID(t.Name)
+	if err != nil {
+		return err
+	}
+
+	if verbose {
+		fmt.Printf("Stopping tunnel '%s' (pid %d)\n", t.Name, pid)
+	}
+
+	return killProcess(pid)
+}
+
+func killProcess(pid int) error {
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+
+	return process.Kill()
+}
