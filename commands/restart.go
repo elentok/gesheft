@@ -4,6 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/elentok/gesheft/config"
 	"github.com/elentok/gesheft/helpers"
+	"github.com/elentok/gesheft/tunnel"
 )
 
 var Restart = cli.Command{
@@ -14,24 +15,24 @@ var Restart = cli.Command{
 }
 
 func restart(c *cli.Context) {
-	tunnel, err := config.GetTunnel(c.Args().First())
+	t, err := config.GetTunnel(c.Args().First())
 	if err != nil {
 		helpers.ExitWithError(err)
 	}
 
-	active, err := tunnel.IsActive()
+	active, err := tunnel.GetActive()
 	if err != nil {
 		helpers.ExitWithError(err)
 	}
 
-	if active {
-		err = tunnel.Stop(true)
+	if active.IsActive(t.Name) {
+		err = t.Stop(true)
 		if err != nil {
 			helpers.ExitWithError(err)
 		}
 	}
 
-	err = tunnel.Start(true)
+	err = t.Start(true)
 	if err != nil {
 		helpers.ExitWithError(err)
 	}

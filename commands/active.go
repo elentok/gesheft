@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/codegangsta/cli"
 	"github.com/elentok/gesheft/helpers"
 	"github.com/elentok/gesheft/tunnel"
@@ -23,7 +21,5 @@ func active(c *cli.Context) {
 		helpers.ExitWithError(err)
 	}
 
-	for name, pid := range active {
-		fmt.Printf("%10d %s\n", pid, name)
-	}
+	active.Print()
 }

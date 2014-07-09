@@ -6,6 +6,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/elentok/gesheft/config"
 	"github.com/elentok/gesheft/helpers"
+	"github.com/elentok/gesheft/tunnel"
 )
 
 var Info = cli.Command{
@@ -16,19 +17,19 @@ var Info = cli.Command{
 }
 
 func info(c *cli.Context) {
-	tunnel, err := config.GetTunnel(c.Args().First())
+	t, err := config.GetTunnel(c.Args().First())
 	if err != nil {
 		helpers.ExitWithError(err)
 	}
 
-	tunnel.Print()
+	t.Print()
 
-	active, err := tunnel.IsActive()
+	active, err := tunnel.GetActive()
 	if err != nil {
 		helpers.ExitWithError(err)
 	}
 
-	if active {
+	if active.IsActive(t.Name) {
 		fmt.Println("  [ACTIVE]")
 	}
 }

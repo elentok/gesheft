@@ -3,9 +3,7 @@ package tunnel
 import (
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
-	"syscall"
 	"time"
 
 	"github.com/fatih/color"
@@ -29,32 +27,13 @@ func (t *Tunnel) Print() {
 	}
 }
 
-func (t *Tunnel) IsActive() (bool, error) {
-	pid, err := GetPID(t.Name)
-	if err != nil {
-		return false, err
-	}
-
-	return isProcessLive(pid), nil
-}
-
-func isProcessLive(pid int) bool {
-	process, err := os.FindProcess(pid)
-	if err != nil {
-		return false
-	}
-
-	err = process.Signal(syscall.Signal(0))
-	return err == nil
-}
-
 func (t *Tunnel) Start(verbose bool) error {
-	active, err := t.IsActive()
+	active, err := GetActive()
 	if err != nil {
 		return err
 	}
 
-	if active {
+	if active.IsActive(t.Name) {
 		color.Red("Tunnel '%s' is already active.\n", t.Name)
 		return nil
 	}
@@ -73,7 +52,11 @@ func (t *Tunnel) Start(verbose bool) error {
 			cmd.Process.Pid)
 	}
 
-	SaveActive(t.Name, cmd.Process.Pid)
+	active.SetPID(t.Name, cmd.Process.Pid)
+	err = active.Save()
+	if err != nil {
+		return err
+	}
 
 	time.Sleep(1 * time.Second)
 
@@ -100,35 +83,15 @@ func (t *Tunnel) getSshArgs() []string {
 }
 
 func (t *Tunnel) Stop(verbose bool) error {
-	active, err := t.IsActive()
+	active, err := GetActive()
 	if err != nil {
 		return err
 	}
 
-	if !active {
+	if !active.IsActive(t.Name) {
 		return errors.New(
 			fmt.Sprintf("Tunnel '%s' is not active", t.Name))
 	}
 
-	pid, err := GetPID(t.Name)
-	if err != nil {
-		return err
-	}
-
-	if verbose {
-		fmt.Printf("Stopping tunnel '%s' (pid %d)\n", t.Name, pid)
-	}
-
-	return killProcess(pid)
-}
-
-func killProcess(pid int) error {
-	process, err := os.FindProcess(pid)
-	if err != nil {
-		return err
-	}
-
-	err = process.Kill()
-	time.Sleep(1 * time.Second)
-	return err
+	return active.Kill(t.Name, verbose)
 }
