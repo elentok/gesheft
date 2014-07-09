@@ -34,6 +34,4 @@ Development
 
 To run the tests, you'll need [ginkgo](https://github.com/onsi/ginkgo)
 
-    go get github.com/onsi/ginkgo/ginkgo
-    go get github.com/onsi/gomega
-    ginkgo -r
+    script/test
