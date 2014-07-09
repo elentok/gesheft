@@ -11,13 +11,15 @@ var _ = Describe(".LoadActive", func() {
 		active, err := tunnel.LoadActive("test-fixtures/active.yml")
 
 		Expect(err).To(BeNil())
-		Expect(active.Tunnels).To(HaveLen(1))
-		Expect(active.Tunnels["tunnel1"]).To(Equal(33394))
+
+		pid, ok := active.GetPID("tunnel1")
+		Expect(ok).To(BeTrue())
+		Expect(pid).To(Equal(33394))
 	})
 
-	It("Returns an empty map when file doesn't exist", func() {
+	It("Returns an empty instance when file doesn't exist", func() {
 		active, err := tunnel.LoadActive("non-existing-file")
 		Expect(err).To(BeNil())
-		Expect(active.Tunnels).To(HaveLen(0))
+		Expect(active).NotTo(BeNil())
 	})
 })

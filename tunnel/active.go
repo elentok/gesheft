@@ -18,6 +18,7 @@ type Active interface {
 	Kill(name string, verbose bool) error
 	Save() error
 	Print()
+	RemoveZombies() error
 }
 
 type active struct {
@@ -42,11 +43,6 @@ func LoadActive(filename string) (Active, error) {
 	}
 
 	err = yaml.Unmarshal(bytes, &a.pidByName)
-	if err != nil {
-		return nil, err
-	}
-
-	err = a.removeZombies()
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +131,7 @@ func getActiveFilepath() string {
 	return filepath.Join(os.Getenv("HOME"), ".shaft.active")
 }
 
-func (a *active) removeZombies() error {
+func (a *active) RemoveZombies() error {
 	changed := false
 
 	for name, _ := range a.pidByName {
